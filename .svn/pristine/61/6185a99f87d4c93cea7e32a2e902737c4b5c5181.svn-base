@@ -1,0 +1,143 @@
+@CHARSET "UTF-8";
+
+.navbar1 {
+	border-bottom: 1px solid #e1e1e1;
+	-webkit-box-shadow: 1px 0 3px #eee,inset 0 0 3px #fff;
+	box-shadow: 1px 0 3px #eee,inset 0 0 3px #fff;
+	padding: 0 15px;
+	position: relative;
+	height:55px;	
+	margin-top:3px;
+}
+
+.title1 {
+	white-space: nowrap;
+}
+
+.table1 {
+	margin: 15px;
+	height: auto;
+	padding: 15px;
+	padding-bottom: 0px;
+	border: solid 1px #e1e1e1;
+	-webkit-box-shadow: 0 0 3px #eee,inset 0 0 3px #fff;
+	box-shadow: 0 0 3px #eee,inset 0 0 3px #fff;
+}
+
+.navbar1 .title1 h3 {
+	display: inline;
+	margin: 0;
+	line-height: 59px;
+	font-size: 20px;
+	color: #5c6371;
+}
+
+.maincLabel
+{
+	font-family:微软雅黑;
+	font-size:20px;
+	line-height:2.5;
+}
+
+.navbar1 a
+{
+	font-family:微软雅黑;
+	font-size:18px;
+	line-height:2.9;
+	text-decoration:none;
+	color:#5c6371;
+	float:right;
+	margin-right:40px;
+}
+
+.navbar1 a:hover
+{
+	border-bottom: 3px solid #D84C31 !important;
+	color: #323A45;
+	cursor: default;
+}
+
+.aactive
+{
+	border-bottom: 3px solid #D84C31 !important;
+	color: #323A45;
+	cursor: default;
+}
+
+.tabLabCon
+{
+	padding-left:40px;
+	border-bottom:1px solid #DDD;
+	margin-bottom:7px;
+}
+
+.tableLabel
+{
+	width:auto;
+	font-family:微软雅黑;
+	font-size:18px;
+	line-height:3.5;
+	text-decoration:none;
+	color:#323A45;
+	margin-right:40px;
+	border-bottom:3px solid rgba(216, 76, 49, 0.4);
+	padding-bottom:16px;
+}
+
+.tableLabel:hover
+{
+	text-decoration:none;
+	border-bottom: 3px solid #D84C31 !important;
+}
+
+*{
+	margin:0;padding:0;list-style-type:none;
+}
+#QuacorGrading input{
+	background:url('../images/grading.png') no-repeat scroll right center;
+	cursor:pointer;
+	height:30px;
+	width:30px;
+	padding:0;
+	border:0;
+}
+#QuacorGrading1 input{
+	background:url('../images/grading.png') no-repeat scroll right center;
+	cursor:pointer;
+	height:30px;
+	width:30px;
+	padding:0;
+	border:0;
+}
+#QuacorGrading2 input{
+	background:url('../images/grading.png') no-repeat scroll right center;
+	cursor:pointer;
+	height:30px;
+	width:30px;
+	padding:0;
+	border:0;
+}
+#QuacorGrading3 input{
+	background:url('../images/grading.png') no-repeat scroll right center;
+	cursor:pointer;
+	height:30px;
+	width:30px;
+	padding:0;
+	border:0;
+}
+#QuacorGrading4 input{
+	background:url('../images/grading.png') no-repeat scroll right center;
+	cursor:pointer;
+	height:30px;
+	width:30px;
+	padding:0;
+	border:0;
+}
+#QuacorGrading5 input{
+	background:url('../images/grading.png') no-repeat scroll right center;
+	cursor:pointer;
+	height:30px;
+	width:30px;
+	padding:0;
+	border:0;
+}

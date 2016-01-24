@@ -1,0 +1,107 @@
+#topBar{
+	padding:2px 10px;
+	border-bottom:1px solid #CCC;
+	background-color:rgb(247, 246, 246);
+	color:rgb(102, 102, 102);
+}
+
+#topBar a{
+	color:#666;
+}
+
+#topBar a:hover{
+	color:#FF6600;
+}
+
+/* header */
+#header {
+	margin-bottom:15px; 
+	position: relative;
+	border-bottom:1px solid #EEE;
+}
+
+#header h1 a {
+	color: #658A16;
+	text-decoration: none
+}
+
+#header h1 small {color: #BACE87;}
+
+/* footer */
+#footer {
+	margin-top: 15px;
+	padding: 15px 0px 0px 0px;
+	font-size: 95%;
+	text-align: center;
+	border-top: 1px solid #EEE;
+	color:#A7A7A7;
+}
+
+#footer a {color: #999;}
+
+#topBar{
+	padding:2px 10px;
+	border-bottom:1px solid #CCC;
+	background-color:rgb(247, 246, 246);
+	color:rgb(102, 102, 102);
+}
+
+#topBar a{
+	color:#666;
+}
+
+#topBar a:hover{
+	color:#FF6600;
+}
+
+#logo{
+	margin-top:20px;
+	display:block;
+	font-size:50px;
+	font-weight:bold;
+	text-decoration: none;
+}
+
+#nav{
+	position:absolute;
+	bottom:0px;
+	right:10px;
+	margin-bottom:-1px;
+}
+
+#nav li a{
+	color:#242424;
+	font-weight: bold;
+}
+
+#nav li.active a{
+	color:#ff6600;
+}
+
+#loginForm{
+	background:url(../images/login.png?v=2) right 20px no-repeat;
+	height:324px;	
+}
+
+#registerForm{
+	background:url(../images/login.png?v=2) right 20px no-repeat;
+}
+
+#loginForm legend, #registerForm legend{
+	margin-bottom:30px;
+}
+
+#registerForm textarea#agreement{
+	width:380px;
+	text-align: left;
+}
+
+.clear{
+	clear:both;
+	font-size:0px;
+	line-height:0px;
+}
+
+#left{
+	border-right:1px solid #CCC;
+}

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	
+	<constant name="struts.objectFactory" 
+		value="org.apache.struts2.spring.StrutsSpringObjectFactory" />
+	
+	<constant name="struts.custom.i18n.resources" value="messages"/>
+    <constant name="struts.enable.DynamicMethodInvocation" value="false" />
+    <constant name="struts.devMode" value="false" />
+    <constant name="struts.ui.theme" value="simple"/>
+
+    <package name="default" namespace="/" extends="struts-default">
+
+        <default-action-ref name="index" />
+		
+        <global-results>
+            <result name="login">/index.jsp</result>
+        </global-results>
+
+		<action name="loginAction_*" method="{1}" class="crm.action.LoginAction">
+		    <result name="input">index.jsp</result>
+		    <result name="admin">/1Admin/home.jsp</result>
+		    <result name="saleManager">/2SaleManager/home.jsp</result>
+		    <result name="cusManager">/3CusManager/home.jsp</result>
+		    <result name="seniorManager">/4SeniorManager/home.jsp</result>
+		</action>
+        
+		<action name="authority_*" method="{1}" class="crm.action.cusManager.AuthorityAction">
+		    <result name="userList">/1Admin/userList.jsp</result>
+		    <result name="uaList">/1Admin/userAuthList.jsp</result>
+		    <result name="ini">/1Admin/iniuserAuth.jsp</result>
+		</action>
+    </package>
+
+	
+    <package name="cusManager" namespace="/3CusManager" extends="struts-default">
+        <interceptors>
+            <interceptor name="authority" class="crm.interceptor.AuthorityInterceptor">
+            </interceptor>
+            <interceptor-stack name = "myDefault">
+                <interceptor-ref name="defaultStack"/>
+                <interceptor-ref name="authority"/>   
+            </interceptor-stack>
+        </interceptors>
+       
+        <!-- <default-interceptor-ref name="myDefault"></default-interceptor-ref> -->
+        
+        <global-results>
+            <result name="login">/index.jsp</result>
+        </global-results>
+        
+        <action name="customer_*" method="{1}" class="crm.action.cusManager.CustomerAction">
+            <result name="list">home.jsp</result>
+            <result name="edit">editCustomer.jsp</result>
+            <result name="add">addCustomer.jsp</result>
+            <result name="success">/index.jsp</result>
+        </action>
+        
+        <action name="orderform_*" method="{1}" class="crm.action.cusManager.OrderFormAction">
+        	<result name="list">listOrderForm.jsp</result>
+        	<result name="moreinfo">OrderMoreinfo.jsp</result>
+        </action>
+        
+        <action name="record_*" method="{1}" class="crm.action.cusManager.ContactRecordAction">
+        	<result name="list">listContactRecord.jsp</result>
+        	<result name="input">addContactRecord.jsp</result>
+        </action>
+        
+        <action name="goods_*" method="{1}" class="crm.action.cusManager.GoodsAction">
+        	<result name="list">listGoods.jsp</result>
+        </action>
+        
+        <action name="leftgoods_*" method="{1}" class="crm.action.cusManager.LeftGoodsAction">
+        	<result name="list">listLeftGoods.jsp</result>
+        </action>
+        
+        <action name="opportunity_*" method="{1}" class="crm.action.cusManager.OpportunityAction">
+            <result name="list">opportunityHome.jsp</result>
+            <result name="edit">editOpportunity.jsp</result>
+            <result name="add">addOpportunity.jsp</result>
+            <result name="moreinfo">detailOpportunity.jsp</result>
+            <result name="success">/index.jsp</result>
+        </action>
+        
+        <action name="contact_*" method="{1}" class="crm.action.cusManager.ContactAction">
+        	<result name="success">listContact.jsp</result>
+        	<result name="edit">editContact.jsp</result>
+        	<result name="add">addContact.jsp</result>
+        </action>
+        
+        <action name="measure_*" method="{1}" class="crm.action.cusManager.MeasureAction">
+        	<result name="list">measureList.jsp</result>
+        	<result name="edit">measureEdit.jsp</result>
+        	<result name="confirm">measureConfirm.jsp</result>
+        </action>
+        
+        <action name="plan_*" method="{1}" class="crm.action.cusManager.DevPlanAction">
+            <result name="list">addPlan.jsp</result>
+            <result name="edit">editPlan.jsp</result>
+            <result name="optlist">planHome.jsp</result>
+            <result name="moreinfo">detailPlan.jsp</result>
+        </action>
+        
+        <action name="service_*" method="{1}" class="crm.action.cusManager.ServiceAction">
+            <result name="add">addService.jsp</result>
+            <result name="addItem">addServiceItem.jsp</result>
+            <result name="itemList">listService.jsp</result>
+            <result name="allocateItem">allocateService.jsp</result>
+            <result name="dealList">dealServiceList.jsp</result>
+            <result name="dealMI">dealServiceMI.jsp</result>
+            <result name="fbList">fbServiceList.jsp</result>
+            <result name="fbMI">fbServiceMI.jsp</result>
+            <result name="arList">archiveServiceList.jsp</result>
+            <result name="arMI">archiveServiceMI.jsp</result>
+        </action>
+        
+        <action name="opportunity_*" method="{1}" class="crm.action.cusManager.SaleOpportunityAction">
+            <result name="list">opportunityHome.jsp</result>
+            <result name="edit">editOpportunity.jsp</result>
+            <result name="add">addOpportunity.jsp</result>
+            <result name="moreinfo">detailOpportunity.jsp</result>
+            <result name="assign">assignOpportunity.jsp</result>
+            <result name="success">/index.jsp</result>
+        </action>
+        
+         <action name="plan_*" method="{1}" class="crm.action.cusManager.SaleDevPlanAction">
+            <result name="list">addPlan.jsp</result>
+            <result name="edit">editPlan.jsp</result>
+            <result name="optlist">planHome.jsp</result>
+            <result name="moreinfo">detailPlan.jsp</result>
+            <result name="success">/index.jsp</result>
+        </action>
+        
+        <action name="data_*" method="{1}" class="crm.action.cusManager.DataAction">
+            <result name="list">dataHome.jsp</result>
+            <result name="edit">editData.jsp</result>
+        </action>
+    </package>
+    
+    <!-- Add packages here -->
+
+</struts>

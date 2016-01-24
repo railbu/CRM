@@ -1,0 +1,290 @@
+body
+{
+	background-color:#FFFFFF;
+	font-family:微软雅黑;
+}
+
+.nav-list .dropdown-toggle
+{
+	display:block;
+	padding:15px 20px;
+	padding-right:38px;
+	white-space:nowrap;
+	color:#aeb2b7;
+	background:#393939;
+}
+
+.nav-list .dropdown-toggle:hover
+{
+	color:#d84c31;
+	background:rgba(255,255,255,0.05);
+}
+
+.nav-list .dropdown-toggle.active
+{
+	color:#d84c31;
+	background:rgba(255,255,255,0.05);
+}
+
+.sidebar
+{
+	width:17%;
+	height:900px;
+	position:fixed;
+	top:0;
+	left:0;
+	background:#393939;
+	font-family:微软雅黑;
+	margin-top:50px;
+}
+
+.sidebar:before
+{
+	position:relative;
+	
+}
+
+.nav-list > li > a
+{
+	height:auto;
+	line-height:0px;
+	font-size:15px;
+}
+
+.nav-list > li
+{
+	border-width:0px 0px;
+}
+
+.nav-list > li.open > a
+{
+	background:#393939;
+	color:#d84c31;
+}
+
+.nav-list > li.active > a {
+	background:#393939;
+	color:#aeb2b7;
+	font-size:15px;
+}
+
+.nav-list > li.active > a:hover {
+	background:#393939;
+	color:#d84c31;
+	font-size:15px;
+}
+
+.nav-list > li.active > a:focus {
+	background:#393939;
+	color:#d84c31;
+	font-size:15px;
+}
+
+.nav-list > li > a:open:before {
+    display: block;
+    content: "";
+    position: absolute;
+    top: -1px;
+    bottom: 0px;
+    left: 0px;
+    width: 3px;
+    max-width: 3px;
+    overflow: hidden;
+    background-color: #3382AF;
+}
+
+.a:hover, .nav-list .open > a:focus
+{
+	background:#393939;
+}
+
+.nav-list > li > a:hover:before
+{
+	
+}
+
+.nav-list > li > a:focus
+{
+	background:#393939;
+	color:#d84c31
+}
+.nav-list > li > a:focus:before {
+    display: block;
+    content: "";
+    position: absolute;
+    top: -1px;
+    bottom: 0px;
+    left: 0px;
+    width: 3px;
+    max-width: 3px;
+    overflow: hidden;
+    background-color: #3382AF;
+}
+
+
+.nav-list > li .submenu
+{
+	
+}
+
+.nav-list > li > .submenu > li:before
+{
+	border-top:0px;
+}
+
+.nav-list > li > .submenu:before
+{
+	border-width:0px 0px 0px 0px;
+}
+
+.sidebar-collapse
+{
+	border-bottom:0px;
+	border-top:0px solid #000000;
+	background:#393939;
+}
+
+.sidebar-collapse > [class*="icon-"] 
+{
+	background-color:#393939;
+}
+
+.menu-min.sidebar
+{
+	width:75px;	
+}
+
+.menu-min .nav-list > li > a > .forhide
+{
+	display:none;
+}
+
+.forhide
+
+{
+	margin-left:30px;
+	vertical-align:middle;
+}
+
+.divider-vertical
+{
+	border-style:solid;
+	border-width:1px;opacity:.5;
+	height:58px;
+	border-left-color:#111415;
+	border-right-color:#646668;
+}
+
+.hr_black
+{
+	margin:1.428571429 auto;
+	border-top:solid 1px #111415;
+	border-bottom:solid 1px #646668
+}
+
+.vr_black
+{
+	margin:1.428571429 auto;
+	border-left:solid 1px #111415;
+	
+}
+
+.navbar
+{
+	background: none repeat scroll 0% 0% #393939;
+	margin-bottom:0px;
+	border:0px solid transparent;
+	border-radius:0px;
+	width:100%;
+	position:fixed;
+}
+
+.navbar .navbar-brand
+{
+	border-right:solid 0px #111415;
+}
+
+.logofont
+{
+	font-family:Forte;
+	color:#FFFFFF;
+	font-size:20px;
+}
+
+.logofont:hover
+{
+	color:#d84c31;
+}
+
+.logodiv
+{
+	margin-right:49px;	
+}
+
+.logodiv:hover
+{
+	color:#d84c31;
+}
+
+.ace-nav > li.light-blue > a {
+    background-color: #393939;
+}
+
+.mainc
+{
+	float:left;
+	width:83%;
+	margin-top:50px;
+	margin-left:17%;
+}
+
+.menu-text
+{
+	vertical-align:middle;
+}
+
+.naviLab
+{
+	vertical-align:middle;
+}
+
+.tableContent
+{
+	
+}
+
+.pageSelect
+{
+	margin-left:40%
+}
+
+.tipinfo
+{
+	font-size:20px;
+	color:red;
+	border:
+}
+
+.tdMI
+{
+	witdh:15%;
+	text-font:微软雅黑;
+	text-size:20px;
+}
+
+.ace-nav > li > a
+{
+	background-color: #393939;
+	line-height:2;
+}
+
+.ace-nav > li > a:hover
+{
+	background-color: #579EC8;
+}
+
+.tdlabel
+{
+	background-color:#CCCCCC;
+	width:100px;
+}

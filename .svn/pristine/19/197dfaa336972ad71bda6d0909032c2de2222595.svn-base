@@ -1,0 +1,160 @@
+package crm.dao;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Component;
+
+import crm.model.ServiceItem;
+import crm.model.ServiceType;
+
+@Component
+public class ServiceItemDao extends HibernateDaoSupport{
+	
+	@SuppressWarnings("unchecked")
+	public List<ServiceItem> findAll(){
+		return super.getSession()
+				.createCriteria(ServiceItem.class)
+				.addOrder(Order.asc("id")).list();
+	}
+	
+	public void save(ServiceItem serviceItem){
+		super.getSession().saveOrUpdate(serviceItem);
+	}
+	
+	public ServiceItem load(Long id){
+		return (ServiceItem) super.getSession().load(ServiceItem.class, id);
+	}
+	
+	public int countAll(){
+		String hql = "select count(*) from ServiceItem";
+		Session session = super.getSession();
+		return ((Long)session.createQuery(hql).uniqueResult()).intValue();
+	}
+	
+	public int countAllAndFB(){
+		String hql = "select count(*) from ServiceItem where state = '已处理'";
+		Session session = super.getSession();
+		return ((Long)session.createQuery(hql).uniqueResult()).intValue();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ServiceItem> findByPage(int pageNo,int pageSize){
+		Session session = super.getSession();
+		return session.createCriteria(ServiceItem.class)
+			.setFirstResult(pageNo)
+			.setMaxResults(pageSize)
+			.list();
+	}
+	
+	public int countByType(ServiceType serviceType) {
+		try{
+			String hql = "select count(*) from ServiceItem si where si.type = ?";
+			Session session = super.getSession();
+			
+			return ((Long)session.createQuery(hql)
+					.setParameter(0, serviceType.getTitle())
+					.uniqueResult()).intValue();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return 1;
+	}
+	
+	public int countAllAndRes(String sCusName,String sSum,String sType,String st,String et){
+		Date sst = null;
+		Date eet = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			sst = sdf.parse("1900-01-01 01:00");
+			eet = sdf.parse("2900-01-01 01:00");
+			sst = sdf.parse(st);
+			eet = sdf.parse(et);
+		} catch (Exception e) {
+			System.out.println("计算总量转换时间出错"+e.getMessage());
+			//e.printStackTrace();
+		}
+		String hql = "select count(*) from ServiceItem si where si.summary like'%"+sSum
+		         +"%' and si.type like'%"+sType+"%'"
+		         + "and createTime > ?"
+		         + "and createTime < ?";
+		Session session = super.getSession();
+		return ((Long)session.createQuery(hql)
+				.setTimestamp(0, sst)
+				.setTimestamp(1, eet)
+				.uniqueResult()).intValue();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ServiceItem> findByPageAndRes(int pageNo,int pageSize,String sCusName,String sSum,String sType,String st,String et){
+		Date sst = null;
+		Date eet = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			sst = sdf.parse("1900-01-01 01:00");
+			eet = sdf.parse("2900-01-01 01:00");
+			sst = sdf.parse(st);
+			eet = sdf.parse(et);
+		} catch (Exception e) {
+			System.out.println("转换时间出错"+e.getMessage());
+			//e.printStackTrace();
+		}
+		
+		String hql = "from ServiceItem si where si.summary like'%"+sSum
+				         +"%' and si.type like'%"+sType+"%'"
+				         + "and createTime > ?"
+				         + "and createTime < ?";
+		Session session = super.getSession();
+		List<ServiceItem> sItems =  session.createQuery(hql)
+				.setTimestamp(0, sst)
+				.setTimestamp(1, eet)
+				.setFirstResult(pageNo)
+				.setMaxResults(pageSize)
+				.list();
+		//判断时间
+		return sItems;
+		
+	}
+	
+//	@SuppressWarnings("unchecked")
+//	public List<ServiceItem> findByPageAndRes(int pageNo,int pageSize,String sCusName,String sSum,String sType,String st,String et){
+//		String hql = "from ServiceItem si where si.summary like'%"+sSum
+//				         +"%' and si.type like'%"+sType+"%'";
+//		Session session = super.getSession();
+//		List<ServiceItem> sItems =  session.createQuery(hql)
+//				.setFirstResult(pageNo)
+//				.setMaxResults(pageSize)
+//				.list();
+//		//判断时间
+//		Date sst = null;
+//		Date eet = null;
+//		try {
+//			sst = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(st);
+//			eet = new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(et);
+//			return sItems;
+//		} catch (Exception e) {
+//			System.out.println("转换时间出错"+e.getMessage());
+//			//e.printStackTrace();
+//			return sItems;
+//		}
+//		finally{
+//			//去掉日期不符合的项
+//			for(int i=0;i<sItems.size();i++){
+//				ServiceItem tsi = sItems.get(i);
+//				if(StringUtils.isNotEmpty(st) && tsi.getCreateTime().getTime() < sst.getTime())
+//					sItems.remove(i);
+//				if(StringUtils.isNotEmpty(et) && tsi.getCreateTime().getTime() > eet.getTime())
+//					sItems.remove(i);
+//			}
+//		}
+//		
+//	}
+	
+	public void delete(Long id){
+		super.getSession().delete(load(id));
+	}
+}

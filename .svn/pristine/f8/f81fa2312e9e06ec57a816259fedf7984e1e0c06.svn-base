@@ -1,0 +1,19 @@
+$(function () {
+
+
+    // Vertical slider
+    $("#h-slider").slider({
+        orientation: "horizontal",
+        range: "min",
+        min: 0,
+        max: 100,
+        value: 0,
+        slide: function (event, ui) {
+            $("#successRate").val(ui.value);
+        }
+    });
+    
+    
+    $("#successRate").val($("#h-slider").slider("value"));
+
+});

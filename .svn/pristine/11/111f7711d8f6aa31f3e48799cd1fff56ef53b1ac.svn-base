@@ -1,0 +1,38 @@
+package crm.action.cusManager;
+
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
+
+import crm.model.Customer;
+
+@Controller
+@Scope("request")
+public class AnalysizeAction extends ActionSupport implements Preparable,ModelDriven<Customer>{
+
+	private static final long serialVersionUID = 1L;
+	
+	private Customer customer;
+
+	@Override
+	public void prepare() throws Exception {
+		
+	}
+
+	@Override
+	public Customer getModel() {
+		return this.getCustomer();
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+}

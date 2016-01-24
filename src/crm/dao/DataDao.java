@@ -1,0 +1,78 @@
+package crm.dao;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Component;
+
+import crm.model.DataLibrary;
+import crm.model.SaleOpportunity;
+
+@Component
+public class DataDao extends HibernateDaoSupport {
+
+	public DataLibrary save(DataLibrary data){
+		super.getSession().saveOrUpdate(data);
+		return data;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<DataLibrary> findAll(){
+		return super.getSession()
+				.createCriteria(DataLibrary.class)
+				.addOrder(Order.asc("id")).list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<String> findAllType(){
+		String hql = "select type from DataLibrary";
+		Session session = super.getSession();
+		return session.createQuery(hql).list();
+	}
+	public DataLibrary findDataById(Long id){
+		Session session = super.getSession();
+		
+		DataLibrary data = (DataLibrary)session.createCriteria(DataLibrary.class)
+				.add(Restrictions.eq("id", id)).uniqueResult();
+		
+		return data;
+	}
+	
+	public void delete(Long id){
+		super.getSession().delete(super.getSession().load(DataLibrary.class, id));
+	}
+	
+	public DataLibrary getDataLibrary(Long id){
+		return (DataLibrary) super.getSession().get(DataLibrary.class, id);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<DataLibrary> findByPage(int pageNo,int pageSize){
+		Session session = super.getSession();
+		return session.createCriteria(DataLibrary.class)
+			.setFirstResult(pageNo)
+			.setMaxResults(pageSize)
+			.addOrder(Order.asc("id"))
+			.list();
+	}
+	@SuppressWarnings("unchecked")
+	public List<DataLibrary> findByCriteria(String dataType, String dataName, String dataValue, int pageNo,int pageSize){
+		String hql = "from DataLibrary where type like'%"+dataType+"%' and name like'%"+dataName+"%' and value like'%"+dataValue+"%'";
+		Session session = super.getSession();
+		return session.createQuery(hql).setFirstResult(pageNo).setMaxResults(pageSize).list();
+	}
+	
+	public int countAll(){
+		String hql = "select count(*) from DataLibrary";
+		Session session = super.getSession();
+		return ((Long)session.createQuery(hql).uniqueResult()).intValue();
+	}
+	public int countByCriteria(String dataType, String dataName, String dataValue){
+		String hql = "select count(*) from DataLibrary where type like'%"+dataType+"%' and name like'%"+dataName+"%' and value like'%"+dataValue+"%'";
+		Session session = super.getSession();
+		return ((Long)session.createQuery(hql).uniqueResult()).intValue();
+	}
+}

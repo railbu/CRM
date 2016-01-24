@@ -1,0 +1,124 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!doctype html>
+<html>
+
+<head>
+		<title>Insert title here</title>
+		<%@include file="/common/header.jsp"%>
+		<%@include file="/common/meta.jsp"%>
+		<script src="${ctx}/resources/js/Chart.js"></script>
+
+</head>
+
+<body>
+		<%@include file="topCNM.jsp"%>
+		<%@include file="naviCN.jsp"%>
+		
+		<script src="${ctx}/resources/js/typeahead-bs2.min.js"></script>
+		<script src="${ctx}/resources/js/ace-elements.min.js"></script>
+		<script src="${ctx}/resources/js/ace.min.js"></script>
+	
+		<div class="mainc">
+			<div class="navbar1">
+				<span class="maincLabel">
+					<i class="glyphicon glyphicon-export"></i>
+					&nbsp;查询产品信息 
+				</span>
+				<a href="#" >帮助</a>
+				<a href="#" >查询</a>
+			</div>
+			<div class="col-md-10">
+			
+			</div>
+			<div class="col-md-12">
+			
+				<div class="table1" style="padding:15px 30px 15px">
+				<form action="" class="form-inline" role="form" enctype="multipart/form-data" method="post">
+						  <div class="form-group" style="width:40%">
+						    <div class="input-group">
+						      <div class="input-group-addon">　报表方式　</div>
+						      <%-- <s:select list="ranks" cssClass="form-control" name="rank" listValue="title"/> --%>
+						    </div>
+						  </div>&nbsp;&nbsp;&nbsp;
+						  <s:submit style="width:12%" cssClass="btn btn-primary" value="Search" />
+					</form>
+				</div>
+				
+				<div class="table1" style="padding:35px 35px 35px;">
+					
+					<div id="canvas-holder" style="width:33%;float:left">
+						<canvas id="chart-area" width="320" height="320"></canvas>
+					</div>
+					
+					<div  style="width:58%;float:right">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>等级</th>
+									<th>颜色</th>
+									<th>客户数量</th>
+								</tr>
+							</thead>
+							<tbody>
+								<s:iterator value="list" var="item">
+									<tr>
+										<td><s:property value="id" /></td>
+										<td><s:property value="name" /></td>
+										<td><s:property value="type" /></td>
+									</tr>
+								</s:iterator>
+							</tbody>
+						</table>
+					</div>
+					<div style="clear:both">
+					</div>
+				</div>
+
+			</div>
+			</div>
+			
+	<script type="text/javascript">
+	var pieData = [
+					{
+						value: 300,
+						color:"#F7464A",
+						highlight: "#FF5A5E",
+						label: "Red"
+					},
+					{
+						value: 50,
+						color: "#46BFBD",
+						highlight: "#5AD3D1",
+						label: "Green"
+					},
+					{
+						value: 100,
+						color: "#FDB45C",
+						highlight: "#FFC870",
+						label: "Yellow"
+					},
+					{
+						value: 40,
+						color: "#949FB1",
+						highlight: "#A8B3C5",
+						label: "Grey"
+					},
+					{
+						value: 120,
+						color: "#4D5360",
+						highlight: "#616774",
+						label: "Dark Grey"
+					}
+
+				];
+
+				window.onload = function(){
+					var ctx = document.getElementById("chart-area").getContext("2d");
+					window.myPie = new Chart(ctx).Pie(pieData);
+				};
+
+	</script>
+	
+</body>
+</html>

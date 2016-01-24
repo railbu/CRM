@@ -1,0 +1,88 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+		<title>Insert title here</title>
+		<%@include file="/common/header.jsp"%>
+		<%@include file="/common/meta.jsp"%>
+		
+		<script type="text/javascript">
+			function formSubmit(){
+				$("#addForm").submit();
+			}
+		</script>
+		
+</head>
+
+<body>
+		<%@include file="topCNM.jsp"%>
+		<%@include file="naviCN.jsp"%>
+		
+		<script src="${ctx}/resources/js/typeahead-bs2.min.js"></script>
+		<script src="${ctx}/resources/js/ace-elements.min.js"></script>
+		<script src="${ctx}/resources/js/ace.min.js"></script>
+	
+		<div class="mainc" id="mainc">
+			<div class="navbar1">
+				<span class="maincLabel">
+					<i class="glyphicon glyphicon-export"></i>
+					&nbsp;服务管理
+				</span>
+				<a href="#" class="aactive">添加服务</a>
+				<a href="service_listItem.action" >服务列表</a>
+			</div>
+		
+			<div class="col-md-12">
+				<form id="addForm" action="${ctx}/3CusManager/service_saveItem.action" class="form-horizontal" enctype="multipart/form-data" method="post">
+					<div class="table1" style="padding-top:0px">
+						<div class="tabLabCon">
+							<a href="#" class="tableLabel">帮　助</a>
+							<a href="service_add" class="tableLabel">返回</a>
+							<a href="javascript:formSubmit();" class="tableLabel">保存</a>
+						</div>
+						<table class="table text-center">
+							<tr>
+								<td>
+									<label class="control-label">概要</label>
+								</td>
+								<td>
+									<s:textfield name="summary" cssClass="form-control"></s:textfield>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label class="control-label">类型</label>
+								</td>
+								<td>
+									<s:select list="types" cssClass="form-control" name="type" 
+     								   listValue="title" listKey="title" value="zx"></s:select>		
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label class="control-label">创建人</label>
+								</td>
+								<td >
+									<s:textfield cssClass="form-control" name="cp"
+										value="%{#session.currentUser.name}" class="form-control" readonly="true"></s:textfield>
+									<%-- <label class="control-label"><s:property value="#session.currentUser"/></label> --%>
+								</td>
+								<td>
+									<label class="control-label">创建时间</label>
+								</td>
+								<td>
+	    							<s:textfield cssClass="form-control" name="currentTime" 
+	    								readonly="true" class="form-control"></s:textfield>
+								</td>
+							</tr>
+						</table>
+						
+					</div>
+				</form>
+			</div>
+		</div>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+		<title>Insert title here</title>
+		<%@include file="/common/header.jsp"%>
+		<%@include file="/common/meta.jsp"%>
+
+</head>
+
+<body>
+		<%@include file="topCNM.jsp"%>
+		<%@include file="naviCN.jsp"%>
+		
+		<script src="${ctx}/resources/js/typeahead-bs2.min.js"></script>
+		<script src="${ctx}/resources/js/ace-elements.min.js"></script>
+		<script src="${ctx}/resources/js/ace.min.js"></script>
+	
+		<div class="mainc" id="mainc">
+			<div class="navbar1">
+				<span class="maincLabel">
+					<i class="glyphicon glyphicon-export"></i>
+					&nbsp客户信息管理
+				</span>
+				
+				<c:if test="${fn:contains(sessionScope.authority,'customer_add')}">
+					<a href="${ctx}/3CusManager/customer_add.action" >添加客户</a>
+				</c:if>
+				
+				<c:if test="${fn:contains(sessionScope.authority,'customer_list')}">
+				<a href="#" class="aactive">客户列表</a>
+				</c:if>
+				
+			</div>
+			
+			<div class="col-md-12">
+				<div class="table1" style="margin-right:px">
+					<div class="tableContent">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>编号</th>
+								<th>客户名</th>
+								<th>地区</th>
+								<th>等级</th>
+								<th>客户经理</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="list" var="item" status="st">
+								<tr>
+									<td><s:property value="id" /></td>
+									<td><s:property value="name" /></td>
+									<td><s:property value="Location.title" /></td>
+									<td><s:property value="Rank.title" /></td>
+									<td><s:property value="user.name" /></td>
+									<td>
+										<c:if test="${fn:contains(sessionScope.authority,'customer_edit')}">
+										<s:url value="/3CusManager/customer_edit" id="edit">
+											<s:param name="cnmid" value="id" />
+										</s:url> 
+										<s:a href="%{edit}" cssClass="button button-flat-primary button-tiny" style="height:32px">编辑</s:a>
+										</c:if>
+										
+										<c:if test="${fn:contains(sessionScope.authority,'customer_delete')}">
+										<s:url value="/3CusManager/customer_delete" id="delete">
+											<s:param name="cnmid" value="id" />
+										</s:url> 
+										<s:a href="%{delete}" cssClass="button button-flat-primary button-tiny" style="height:32px">删除</s:a>
+										</c:if>
+										 
+									</td>
+								</tr>
+							</s:iterator>
+						</tbody>
+					</table>
+					</div>
+					
+					<s:set name="curPage" value="%{currentPage}"/>
+					<div class="pageSelect">
+						<ul class="pagination">
+						
+							<s:url value="/3CusManager/customer_list" id="lpage">
+							 	<s:param name="currentPage" value="lastPage"/>
+							 </s:url>
+							<li ><s:a href="%{lpage}">&laquo;</s:a></li>
+							
+							<s:iterator value="pages" var="item">
+								 <s:url value="/3CusManager/customer_list" id="page">
+								 	<s:param name="currentPage" value="#item"/>
+								 </s:url>
+								 <s:if test="#curPage == #item">
+								 	<li class="active"><s:a href="%{page}"><s:property value="#item"/></s:a></li>
+								 </s:if>
+								 <s:else>
+								 	<li ><s:a href="%{page}"><s:property value="#item"/></s:a></li>
+								 </s:else>
+							</s:iterator>
+							
+							<s:url value="/3CusManager/customer_list" id="rpage">
+								 	<s:param name="currentPage" value="nextPage"/>
+								 </s:url>
+							<li ><s:a href="%{rpage}">&raquo;</s:a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	
+</body>
+</html>

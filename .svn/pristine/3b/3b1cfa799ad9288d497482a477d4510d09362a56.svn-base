@@ -1,0 +1,138 @@
+package crm.dao;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Component;
+
+import crm.model.Customer_service;
+import crm.model.ServiceItem;
+
+
+@Component
+public class CustomerServiceDao extends HibernateDaoSupport{
+	
+//	@SuppressWarnings("unchecked")
+//	public List<ServiceItem> findAll(){
+//		return super.getSession()
+//				.createCriteria(ServiceItem.class)
+//				.addOrder(Order.asc("id")).list();
+//	}
+	
+	public void save(Customer_service cs){
+		super.getSession().saveOrUpdate(cs);
+	}
+	
+	public Customer_service load(Long id){
+		return (Customer_service) super.getSession().load(Customer_service.class, id);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Customer_service> findByPage(int pageNo,int pageSize){
+		Session session = super.getSession();
+		return session.createCriteria(Customer_service.class)
+			.setFirstResult(pageNo)
+			.setMaxResults(pageSize)
+			.list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Customer_service> findByPageAndType(int pageNo,int pageSize,String type){
+		Session session = super.getSession();
+		return session.createCriteria(Customer_service.class)
+			.add(Restrictions.eq("state",type))
+			.setFirstResult(pageNo)
+			.setMaxResults(pageSize)
+			.list();
+	}
+	
+	public void updateState(ServiceItem si){
+		
+		String hql = "update Customer_service c set c.state = ? where c.serviceItem = ?";
+		super.getHibernateTemplate().bulkUpdate(hql, "已分配", si);
+		
+	}
+	
+	public int countAll(){
+		String hql = "select count(*) from Customer_service";
+		Session session = super.getSession();
+		return ((Long)session.createQuery(hql).uniqueResult()).intValue();
+	}
+		
+	public int countAllByType(String type){
+		String hql = "select count(*) from Customer_service where state = ?";
+		Session session = super.getSession();
+		return ((Long)session.createQuery(hql)
+				.setString(0, type)
+				.uniqueResult()).intValue();
+	}
+	
+
+	public int countAllAndRes(String type, String sCusName,String sSum,String sType,String st,String et){
+		Date sst = null;
+		Date eet = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			sst = sdf.parse("1900-01-01 01:00");
+			eet = sdf.parse("2900-01-01 01:00");
+			sst = sdf.parse(st);
+			eet = sdf.parse(et);
+		} catch (Exception e) {
+			System.out.println("计算总量转换时间出错"+e.getMessage());
+			//e.printStackTrace();
+		}
+		String hql = "select count(*) from Customer_service si where state = ?"
+				 + "and si.customer.name like'%"+sCusName
+		         + "%'and si.serviceItem.summary like'%"+sSum
+		         + "%' and si.serviceItem.type like'%"+sType+"%'"
+		         + "and createTime > ?"
+		         + "and createTime < ?";
+		Session session = super.getSession();
+		return ((Long)session.createQuery(hql)
+				.setString(0, type)
+				.setTimestamp(1, sst)
+				.setTimestamp(2, eet)
+				.uniqueResult()).intValue();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Customer_service> findByPageAndRes(int pageNo,int pageSize,String type,String sCusName,String sSum,String sType,String st,String et){
+		Date sst = null;
+		Date eet = null;
+		try {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			sst = sdf.parse("1900-01-01 01:00");
+			eet = sdf.parse("2900-01-01 01:00");
+			sst = sdf.parse(st);
+			eet = sdf.parse(et);
+		} catch (Exception e) {
+			System.out.println("转换时间出错"+e.getMessage());
+			//e.printStackTrace();
+		}
+		
+		String hql = "from Customer_service si where state = ?"
+				         + "and si.customer.name like'%"+sCusName
+				         + "%'and si.serviceItem.summary like'%"+sSum
+				         + "%' and si.serviceItem.type like'%"+sType+"%'"
+				         + "and createTime > ?"
+				         + "and createTime < ?";
+		Session session = super.getSession();
+		List<Customer_service> sItems =  session.createQuery(hql)
+				.setString(0, type)
+				.setTimestamp(1, sst)
+				.setTimestamp(2, eet)
+				.setFirstResult(pageNo)
+				.setMaxResults(pageSize)
+				.list();
+		//判断时间
+		return sItems;
+		
+	}
+	
+}

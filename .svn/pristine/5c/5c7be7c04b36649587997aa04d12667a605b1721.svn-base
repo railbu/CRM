@@ -1,0 +1,163 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+		<title>Insert title here</title>
+		<%@include file="/common/header.jsp"%>
+		<%@include file="/common/meta.jsp"%>
+		
+</head>
+
+<body>
+		<%@include file="topCNM.jsp"%>
+		<%@include file="naviCN.jsp"%>
+		
+		<script src="${ctx}/resources/js/typeahead-bs2.min.js"></script>
+		<script src="${ctx}/resources/js/ace-elements.min.js"></script>
+		<script src="${ctx}/resources/js/ace.min.js"></script>
+	
+		<div class="mainc" id="mainc">
+			<div class="navbar1">
+				<span class="maincLabel">
+					<i class="glyphicon glyphicon-export"></i>
+					&nbsp;服务归档
+				</span>
+				<a href="service_add.action">添加服务</a>
+				<a href="#" class="aactive">服务列表</a>
+			</div>
+			
+			<div class="table1" style="margin-right:0px">
+				 	<form action="service_arList" method="get">
+						<table class="table">
+							<tr>
+								<td>
+									<label class="control-label">客户</label>								
+								</td>
+								<td>
+									<s:textfield name="scusName" cssClass="form-control"></s:textfield>
+								</td>
+								<td>
+									<label class="control-label">概要</label>								
+								</td>
+								<td>
+									<s:textfield name="ssum" cssClass="form-control"></s:textfield>
+								</td>
+								<td>
+									<label class="control-label">服务类型</label>								
+								</td>
+								<td>
+									<s:textfield name="stype" cssClass="form-control"></s:textfield>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label class="control-label">创建日期</label>								
+								</td>
+								<td>
+									 
+									<s:textfield name="st" cssClass="form-control"></s:textfield>
+								</td>
+								<td>
+									<label class="control-label">-</label>								
+								</td>
+								<td>
+									<s:textfield name="et" cssClass="form-control"></s:textfield>
+								</td>
+								<td>
+									<s:submit value="查询" cssClass="btn btn-primary"></s:submit>
+								</td>
+							</tr>
+						</table>
+					</form>
+				</div>
+			
+			<div class="col-md-12">
+				<div class="table1" style="margin-right:0px">
+					<div class="tableContent">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>编号</th>
+								<th>客户</th>
+								<th>概要</th>
+								<th>服务类型</th>
+								<th>创建人</th>
+								<th>创建日期</th>
+								<th>状态</th>
+								<th>操作</th>
+							</tr>
+						</thead>
+						<tbody>
+							<s:iterator value="cslist" var="item" status="st">
+								<tr>
+									<td><s:property value="id" /></td>
+									<td><s:property value="customer.name" /></td>
+									<td><s:property value="serviceItem.summary" /></td>
+									<td><s:property value="serviceItem.type" /></td>
+									<td><s:property value="createPerson.name" /></td>
+									<td><s:property value="formatItem(createTime)" /></td>
+									<td><s:property value="state" /></td>
+									
+									<td>
+										<s:url value="/3CusManager/service_arMI" id="feedback">
+											<s:param name="cnmid" value="id" />
+										</s:url> 
+										<s:a href="%{feedback}" cssClass="button button-flat-primary button-tiny" style="height:32px">详情</s:a> 
+									</td>
+								</tr>
+							</s:iterator>
+						</tbody>
+					</table>
+					</div>
+					<s:set name="curPage" value="%{currentPage}"/>
+				
+					<div class="pageSelect">
+						<ul class="pagination">
+						
+							<s:url value="/3CusManager/service_arList" id="lpage">
+								 	<s:param name="currentPage" value="lastPage"/>
+								 	<s:param name="scusName" value="scusName"/>
+								 	<s:param name="ssum" value="ssum"/>
+								 	<s:param name="stype" value="stype"/>
+								 	<s:param name="st" value="st"/>
+								 	<s:param name="et" value="et"/>
+								 </s:url>
+							<li ><s:a href="%{lpage}">&laquo;</s:a></li>
+							
+							<s:iterator value="pages" var="item">
+								 <s:url value="/3CusManager/service_arList" id="page">
+								 	<s:param name="currentPage" value="#item"/>
+								 	<s:param name="scusName" value="scusName"/>
+								 	<s:param name="ssum" value="ssum"/>
+								 	<s:param name="stype" value="stype"/>
+								 	<s:param name="st" value="st"/>
+								 	<s:param name="et" value="et"/>
+								 </s:url>
+								 <s:if test="#curPage == #item">
+								 	<li class="active"><s:a href="%{page}"><s:property value="#item"/></s:a></li>
+								 </s:if>
+								 <s:else>
+								 	<li ><s:a href="%{page}"><s:property value="#item"/></s:a></li>
+								 </s:else>
+							</s:iterator>
+							
+							<s:url value="/3CusManager/service_arList" id="rpage">
+								 	<s:param name="currentPage" value="nextPage"/>
+								 	<s:param name="scusName" value="scusName"/>
+								 	<s:param name="ssum" value="ssum"/>
+								 	<s:param name="stype" value="stype"/>
+								 	<s:param name="st" value="st"/>
+								 	<s:param name="et" value="et"/>
+								 </s:url>
+							<li ><s:a href="%{rpage}">&raquo;</s:a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			</div>
+		</div>
+
+</body>
+</html>

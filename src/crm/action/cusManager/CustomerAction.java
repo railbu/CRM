@@ -1,0 +1,295 @@
+package crm.action.cusManager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+import com.opensymphony.xwork2.Preparable;
+
+import crm.model.*;
+import crm.service.CustomerService;
+import crm.service.UserService;
+
+@Controller
+@Scope("request")
+public class CustomerAction extends ActionSupport implements Preparable,ModelDriven<Customer>{
+
+	private static final long serialVersionUID = 1L;
+	
+	@Autowired private CustomerService customerService;
+	@Autowired private UserService userService;
+	
+	private Long cnmid;
+	private Customer customer;
+	private List<Customer> list;
+	private Location[] locations = Location.values();
+	private Rank[] ranks = Rank.values();
+	private List<User> users = new ArrayList<User>();
+	private Long userId;
+	
+	//分页
+	private List<Integer> pages = new ArrayList<Integer>();
+	private int currentPage = 1;
+	private int pageCount;
+	private int lastPage;
+	private int nextPage;
+	private int pageSize = 10;
+	
+	public String list(){
+		try{
+			int count = customerService.countAll();
+			pageCount = count/pageSize+(count%pageSize==0?0:1);
+			
+			//设置leftPage 和 nextPage
+			lastPage = currentPage == 1?1:currentPage-1;
+			nextPage = currentPage == pageCount?currentPage:currentPage+1;
+			
+			
+			System.out.println("pageCount="+pageCount);
+			for(int i=1;i<=pageCount;i++){
+				pages.add(i);
+			}
+				
+			list =  customerService.findByPage((currentPage-1)*pageSize, pageSize);
+			return "list";
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return "list";
+	}
+	
+	public String add(){
+		try{
+			this.users = this.userService.findAllByType(2);
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		System.out.println("userSize:"+users.size());
+		return "add";
+	}
+
+	public boolean saveValidation(){
+		int flag = 0;
+		if(StringUtils.isEmpty(customer.getName()))
+		{
+			super.addFieldError("name","补剑琪去死");
+			flag = 1;
+		}
+		if(StringUtils.isEmpty(customer.getAddress()))
+		{
+			super.addFieldError("address","地址不能为空");
+			flag = 1;
+		}
+		if(StringUtils.isEmpty(customer.getZipcode()))
+		{
+			super.addFieldError("zipcode","邮政编码不能为空");
+			flag = 1;
+		}
+		if(StringUtils.isEmpty(customer.getPhone()))
+		{
+			super.addFieldError("phone","电话不能为空");
+			flag = 1;
+		}
+		if(StringUtils.isEmpty(customer.getFax()))
+		{
+			super.addFieldError("fax","传真不能为空");
+			flag = 1;
+		}
+		if(StringUtils.isEmpty(customer.getWebsite()))
+		{
+			super.addFieldError("website","网站不能为空");
+			flag = 1;
+		}
+		if(StringUtils.isEmpty(customer.getCorporation()))
+		{
+			super.addFieldError("corp","法人不能为空");
+			flag = 1;
+		}
+		if(StringUtils.isEmpty(customer.getBankName()))
+		{
+			super.addFieldError("bankName","开户行不能为空");
+			flag = 1;
+		}
+		if(StringUtils.isEmpty(customer.getBankAccount()))
+		{
+			super.addFieldError("bankAccount","银行账号不能为空");
+			flag = 1;
+		}
+		
+		if(flag == 1)
+			return false;
+		return true;
+	}
+	
+	public String save(){
+		
+		if(!saveValidation())
+		{
+			users = userService.findAllByType(2);
+			return "add";
+		}
+		if(customer.getId() == null || customer.getId() == 0)
+			customer.setState("预警");
+		if (this.userId != null)
+			customer.setUser(userService.loadUser(userId));
+		try{
+			this.customerService.save(this.customer);
+			return list();
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return list();
+	}
+
+	public String edit(){
+		try{
+			this.users = this.userService.findAllByType(2);
+			this.customer = customerService.findCustomerById(cnmid);
+			if (this.customer.getId() != null){
+				this.userId = this.customer.getUser().getId();
+			}
+		}catch(Exception e){
+			e.getMessage();
+			e.printStackTrace();
+		}
+		return "edit";
+	}
+	
+	public String delete(){
+		try{
+			System.out.println("cnmid="+cnmid);
+			customerService.delete(cnmid);
+			return list();
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return list();
+	}
+	
+	/**
+	 * @return the list
+	 */
+	public List<Customer> getList() {
+		return list;
+	}
+	
+	/**
+	 * @return the teacher
+	 */
+	public Customer getCustomer() {
+		return customer;
+	}
+	
+	//prepare方法，需要特别注意...关系到值栈-->网页与Action传值的问题
+	private void prepareModel(){
+		if(this.cnmid != null)
+			this.customer = this.customerService.getCustomer(cnmid);
+		else
+			this.customer = new Customer();
+	}
+	public void prepare() throws Exception {
+		prepareModel();
+	}
+//	public void prepareEdit(){
+//		prepareModel();
+//	}
+	
+	public Customer getModel() {
+		return this.customer;
+	}
+	
+	public Location[] getLocations(){
+		return locations;
+	}
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
+	public Long getCnmid() {
+		return cnmid;
+	}
+
+	public void setCnmid(Long cnmid) {
+		this.cnmid = cnmid;
+	}
+	
+	public Rank[] getRanks() {
+		return ranks;
+	}
+
+	public void setRanks(Rank[] ranks) {
+		this.ranks = ranks;
+	}
+
+	public Long getUserId() {
+		return userId;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public int getPageCount() {
+		return pageCount;
+	}
+
+	public void setPageCount(int pageCount) {
+		this.pageCount = pageCount;
+	}
+
+	public List<Integer> getPages() {
+		return pages;
+	}
+
+	public void setPages(List<Integer> pages) {
+		this.pages = pages;
+	}
+
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
+	}
+
+	public int getNextPage() {
+		return nextPage;
+	}
+
+	public void setNextPage(int nextPage) {
+		this.nextPage = nextPage;
+	}
+
+	public int getLastPage() {
+		return lastPage;
+	}
+
+	public void setLastPage(int lastPage) {
+		this.lastPage = lastPage;
+	}
+}

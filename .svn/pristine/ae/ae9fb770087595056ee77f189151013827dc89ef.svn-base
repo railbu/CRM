@@ -1,0 +1,111 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+		<title>Insert title here</title>
+		<%@include file="/common/header.jsp"%>
+		<%@include file="/common/meta.jsp"%>
+
+</head>
+
+<body>
+		<%@include file="topCNM.jsp"%>
+		<%@include file="naviCN.jsp"%>
+		
+		<script src="${ctx}/resources/js/typeahead-bs2.min.js"></script>
+		<script src="${ctx}/resources/js/ace-elements.min.js"></script>
+		<script src="${ctx}/resources/js/ace.min.js"></script>
+	
+		<div class="mainc" id="mainc">
+			<div class="navbar1">
+				<span class="maincLabel">
+					<i class="glyphicon glyphicon-export"></i>
+					&nbsp;客户流失分析
+				</span>
+				<a href="#" >帮助</a>
+				<a href="#" >查询</a>
+			</div>
+			<div class="col-md-10">
+			
+			</div>
+			<div class="col-md-12">
+			
+				<div class="table1" style="padding:15px 30px 15px">
+				<form action="" class="form-inline" role="form" enctype="multipart/form-data" method="post">
+						  <div class="form-group" style="width:33%">
+						    <div class="input-group">
+						      <div class="input-group-addon">　客户名称　</div>
+						      <s:textfield name="productName" cssClass="form-control" placeholder="Enter customer name" />
+						    </div>
+						  </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						  <div class="form-group" style="width:33%">
+						    <div class="input-group">
+						      <div class="input-group-addon">　客户经理　</div>
+						      <s:textfield name="respoitoryName" cssClass="form-control" placeholder="Enter customer manager" />
+						    </div>
+						  </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						  <s:submit style="width:9%" type="submit" cssClass="btn btn-primary" value="查询"/>
+					</form>
+				</div>
+			
+			
+			<div class="table1" style="padding:35px 35px 5px">
+					<table class="table">
+					<thead>
+						<tr>
+							<th>编号</th>
+							<th>年份</th>
+							<th>客户</th>
+							<th>客户经理</th>
+							<th>流失原因</th>
+						</tr>
+					</thead>
+					<tbody>
+						<s:iterator value="clist" var="item">
+							<tr>
+								<td><s:property value="id" /></td>
+								<td><s:property value ="%{getText('{0,date,yyyy}',{timeOfLost})}"/></td>
+								<td><s:property value="name" /></td>
+								<td><s:property value="user.name" /></td>
+								<td><s:property value="reasonOfLost" /></td>
+							</tr>
+						</s:iterator>
+					</tbody>
+				</table>
+				</div>
+				
+				<s:set name="curPage" value="%{currentPage}"/>
+				
+					<div class="pageSelect">
+						<ul class="pagination">
+						
+							<s:url value="/3CusManager/analysize_lostlist" id="lpage">
+								 	<s:param name="currentPage" value="lastPage"/>
+								 </s:url>
+							<li ><s:a href="%{lpage}">&laquo;</s:a></li>
+							
+							<s:iterator value="pages" var="item">
+								 <s:url value="/3CusManager/analysize_lostlist" id="page">
+								 	<s:param name="currentPage" value="#item"/>
+								 </s:url>
+								 <s:if test="#curPage == #item">
+								 	<li class="active"><s:a href="%{page}"><s:property value="#item"/></s:a></li>
+								 </s:if>
+								 <s:else>
+								 	<li ><s:a href="%{page}"><s:property value="#item"/></s:a></li>
+								 </s:else>
+							</s:iterator>
+							
+							<s:url value="/3CusManager/analysize_lostlist" id="rpage">
+							 	<s:param name="currentPage" value="nextPage"/>
+							</s:url>
+							<li ><s:a href="%{rpage}">&raquo;</s:a></li>
+						</ul>
+					</div>
+			</div>
+			</div>
+	
+</body>
+</html>

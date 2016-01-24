@@ -1,0 +1,76 @@
+/**
+ * @author Rail丶Bu
+ *
+ */
+package crm.dao;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.stereotype.Component;
+import crm.model.Customer;
+
+@Component
+public class CustomerDao extends HibernateDaoSupport {
+
+	public Customer findCustomer(String name){
+		Session session = super.getSession();
+				
+		Customer Customer = (Customer) session.createCriteria(Customer.class)
+				.add(Restrictions.eq("name", name)).uniqueResult();
+		
+		return Customer;
+	}
+	
+	public Customer findCustomerById(Long id){
+		Session session = super.getSession();
+				
+		Customer Customer = (Customer) session.createCriteria(Customer.class)
+				.add(Restrictions.eq("id",id)).uniqueResult();
+		return Customer;
+	}
+	
+	public Customer save(Customer Customer){
+		super.getSession().saveOrUpdate(Customer);
+		return Customer;
+	}
+
+	public Customer getCustomer(Long id) {
+		return (Customer) super.getSession().get(Customer.class, id);
+	}
+	
+	public void delete(Long id) {
+		super.getSession().delete(super.getSession().load(Customer.class, id));
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Customer> findAll(){
+		return super.getSession()
+				.createCriteria(Customer.class)
+				.addOrder(Order.asc("id")).list();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Customer> findByPage(int pageNo,int pageSize){
+		Session session = super.getSession();
+		return session.createCriteria(Customer.class)
+			.setFirstResult(pageNo)
+			.setMaxResults(pageSize)
+			.list();
+		
+	}
+	//查询总条数
+	public int countAll(){
+		String hql = "select count(*) from Customer";
+		Session session = super.getSession();
+		return ((Long)session.createQuery(hql).uniqueResult()).intValue();
+	}
+	
+	public Customer load(Long id){
+		return (Customer) super.getSession().load(Customer.class, id);
+	}
+
+}

@@ -1,0 +1,70 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+    
+<div class="navbar navbar-default" id="navbar">
+		
+			<div class="navbar-container" id="navbar-container">
+				<div class="navbar-header pull-left">
+					<a href="/Admin/Index/index.html" class="navbar-brand">
+						<span class="logodiv">
+							<!-- <span class="glyphicon glyphicon-tower"></span>
+							<span class="logofont">RuLaiCRM</span> -->
+							<img height="31" width=""  class="glyphicon" src="${ctx}/resources/images/logo.png"/>
+						</span>
+					</a><!-- /.brand -->
+				</div><!-- /.navbar-header -->
+				
+				<div class="navbar-header pull-right" role="navigation">
+					
+					<ul class="nav ace-nav">
+						<li style="color:#FFFFFF;border-right:border-top:solid 1px #111415;">
+
+								<span class="user-info">
+									<small>Welcome,</small>
+									admin								
+								</span>
+
+								<i class="icon-caret-down"></i>
+							
+						</li>
+						
+						<li class="light-blue" style="border-right:border-top:solid 1px #646668;">
+							<a data-toggle="dropdown" href="#" class="dropdown-toggle">
+								<img class="nav-user-photo" src="/favicon.ico" alt="Jason's Photo" />
+								<span class="user-info">
+									<small>Welcome,</small>
+									admin								
+								</span>
+
+								<i class="icon-caret-down"></i>
+							</a>
+
+							<ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+								<li>
+									<a href="/Admin/Admin/modify_pass.html">
+										<i class="icon-cog"></i>
+										修改密码
+									</a>
+								</li>
+
+								<!--<li>
+									<a href="#">
+										<i class="icon-user"></i>
+										Profile
+									</a>
+								</li>-->
+
+								<li class="divider"></li>
+
+								<li>
+									<a href="/Admin/Login/logout.html">
+										<i class="icon-off"></i>
+										安全退出
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul><!-- /.ace-nav -->
+				</div><!-- /.navbar-header -->
+			</div><!-- /.container -->
+		</div>

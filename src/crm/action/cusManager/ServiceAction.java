@@ -1,0 +1,597 @@
+package crm.action.cusManager;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.SimpleFormatter;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+
+import crm.dao.ServiceItemDao;
+import crm.model.Customer;
+import crm.model.Customer_service;
+import crm.model.ServiceItem;
+import crm.model.ServiceType;
+import crm.model.User;
+import crm.service.CustomerService;
+import crm.service.CustomerServiceService;
+import crm.service.ServiceItemService;
+import crm.service.UserService;
+
+@Controller
+@Scope("request")
+public class ServiceAction extends ActionSupport implements ModelDriven<Customer_service>{
+	
+	private static final long serialVersionUID = 5787409392526847255L;
+	
+	@Autowired private CustomerService customerService;
+	@Autowired private ServiceItemService serviceItemService;
+	@Autowired private UserService userService;
+	@Autowired private CustomerServiceService csService;
+	
+	private Customer_service cs;
+	private List<Customer> customers;
+	private ServiceType[] types = ServiceType.values();
+	private List<ServiceItem> services;
+	private String currentTime;
+	private Long serviceId;
+	private Long customerId;
+	private List<User> cusManagers;
+	
+	//与Item有关的变量
+	private String summary;
+	private String type;
+	private String createPersonName;
+	private List<ServiceItem> itemList;
+	
+	//分页
+	private List<Integer> pages = new ArrayList<Integer>();
+	private int currentPage = 1;
+	private int pageCount;
+	private int lastPage;
+	private int nextPage;
+	private int pageSize = 10;
+	
+	//分配 变量
+	private Long cnmid;
+	private Long cusManId;
+	
+	//服务处理 变量
+	private List<Customer_service> cslist;
+	private String serviceDeals;
+	
+	//服务反馈 变量
+	private String tresult;
+	private int tsatisfication;
+	
+	//chaxun
+	private String scusName = "";
+	private String ssum = "";
+	private String stype = "";
+	   //开始时间
+	private String st;
+	   //结束时间
+	private String et;
+	
+	public String listItem(){
+		try{
+			int count = serviceItemService.countAll();
+			//先查出所有项
+			itemList = serviceItemService.findByPage((currentPage-1)*pageSize, pageSize);
+			//获取总量
+			pageCount = count/pageSize+(count%pageSize==0?0:1);
+			
+			//设置leftPage 和 nextPage
+			lastPage = currentPage == 1?1:currentPage-1;
+			nextPage = currentPage == pageCount?currentPage:currentPage+1;
+			
+			for(int i=1;i<=pageCount;i++){
+				pages.add(i);
+			}
+			
+			return "itemList";
+			
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return "itemList";
+	}
+	
+	public String formatTime(Date date){
+		return new SimpleDateFormat("yyyy-MM-dd HH:mm").format(date);
+	}
+	
+	public String addItem(){
+		currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+		return "addItem";
+	}
+	
+	/**
+	 * @return
+	 */
+	public String saveItem(){
+		ServiceItem serviceItem = new ServiceItem();
+		serviceItem.setSummary(summary);
+		User tu = (User) ActionContext.getContext().getSession().get("currentUser");
+		serviceItem.setCreatePerson(tu);
+		serviceItem.setType(type);
+		serviceItem.setCreateTime(new Date());
+		
+		serviceItemService.save(serviceItem);
+		
+		return add();
+	}
+	
+	public String add(){
+		currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+		customers = customerService.findAll();
+		services = serviceItemService.findAll();
+		return "add";
+	}
+	
+	public String save(){
+		Customer customer = customerService.load(customerId);
+		ServiceItem serviceItem = serviceItemService.load(serviceId);
+		User tu = (User) ActionContext.getContext().getSession().get("currentUser");
+		
+		
+		cs.setCustomer(customer);
+		cs.setServiceItem(serviceItem);
+		cs.setState(serviceItem.getAssignState());
+		cs.setCreatePerson(tu);
+		cs.setCreateTime(new Date());
+		
+		try{
+			csService.save(cs);
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		
+		return listItem();
+	}
+	
+	public String allocatelist(){
+		try{
+			itemList = serviceItemService.findByPageAndRes((currentPage-1)*pageSize, pageSize,getScusName(),ssum,stype,st,et);
+			
+			int count = serviceItemService.countAllAndRes(scusName, ssum, stype, st, et);
+			
+			pageCount = count/pageSize+(count%pageSize==0?0:1);
+			cusManagers = userService.findAllByType(2);
+			//设置leftPage 和 nextPage
+			lastPage = currentPage == 1?1:currentPage-1;
+			nextPage = currentPage == pageCount?currentPage:currentPage+1;
+			
+			for(int i=1;i<=pageCount;i++){
+				pages.add(i);
+			}
+
+			return "allocateItem";
+			
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return "allocateItem";
+	}
+	
+	public String allocate(){
+		try{
+			ServiceItem tcs = serviceItemService.load(cnmid);
+			tcs.setAssignedPerson(userService.loadUser(cusManId));
+			tcs.setAssignState("已分配");
+			//给所有 反向 的 cus_service 赋值
+			
+			csService.updateState(tcs);
+			tcs.setAssignTime(new Date());
+			serviceItemService.save(tcs);
+			
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return allocatelist();
+	}
+	
+	public String deleteItem(){
+		try{			
+			serviceItemService.delete(cnmid);
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+			super.addFieldError("cd", "该服务条目正被使用，暂不能删除");
+		}
+		User user = (User) ActionContext.getContext().getSession().get("currentUser");
+		if(user.getPower() == 2)
+			return listItem();
+		else
+			return allocatelist();
+	}
+	
+	//处理服务
+	public String dealList(){
+		try{
+			User tu = (User) ActionContext.getContext().getSession().get("currentUser");
+			//如果当前用户是销售主管，则查询所有
+			if(tu.getPower() == 1)
+				tu = null;
+			int count = csService.countAllAndRes("已分配", scusName, ssum, stype, st, et, tu);
+			//int count = csService.countAll();
+			pageCount = count/pageSize+(count%pageSize==0?0:1);
+			
+			//设置leftPage 和 nextPage
+			lastPage = currentPage == 1?1:currentPage-1;
+			nextPage = currentPage == pageCount?currentPage:currentPage+1;
+			
+			for(int i=1;i<=pageCount;i++){
+				pages.add(i);
+			}
+			
+			cslist = csService.findByPageAndRes((currentPage-1)*pageSize, pageSize,"已分配",scusName, ssum, stype, st, et, tu);
+			return "dealList";
+			
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return "dealList";
+	}
+	
+	public String dealMI(){
+		cs = csService.load(cnmid);
+		currentTime = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+		return "dealMI";
+	}
+	
+	public String saveDealMI(){
+		cs = csService.load(cnmid);
+		cs.setServiceDeal(serviceDeals);
+		cs.setState("已处理");
+		cs.setDealTime(new Date());
+		try{
+			csService.save(cs);
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return dealList();
+	}
+	
+	public String fbList(){
+		try{
+			User tu = (User) ActionContext.getContext().getSession().get("currentUser");
+			//如果当前用户是销售主管，则查询所有
+			if(tu.getPower() == 1)
+				tu = null;
+			int count = csService.countAllAndRes("已处理", scusName, ssum, stype, st, et,tu);
+			pageCount = count/pageSize+(count%pageSize==0?0:1);
+			
+			//设置leftPage 和 nextPage
+			lastPage = currentPage == 1?1:currentPage-1;
+			nextPage = currentPage == pageCount?currentPage:currentPage+1;
+			
+			for(int i=1;i<=pageCount;i++){
+				pages.add(i);
+			}
+
+			cslist = csService.findByPageAndRes((currentPage-1)*pageSize, pageSize,"已处理",scusName, ssum, stype, st, et ,tu);
+			return "fbList";
+			
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return "fbList";
+	}
+	
+	public String fbMI(){
+		cs = csService.load(cnmid);
+		currentTime = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(new Date());
+		return "fbMI";
+	}
+	
+	public String saveFbMI(){
+		cs = csService.load(cnmid);
+		cs.setResult(tresult);
+		cs.setSatisfication(tsatisfication);
+		
+		if(tsatisfication >= 3){
+			cs.setState("已归档");
+		}else{
+			cs.setState("已分配");	
+		}
+		
+		try{
+			csService.save(cs);
+			System.out.println(cs.getSatisfication()+":"+cs.getResult());
+		}catch(Exception e){
+			e.printStackTrace();
+			System.out.println(e.getMessage());
+		}
+		return fbList();
+	}
+	
+	
+	public String arList(){
+		try{
+			User tu = (User) ActionContext.getContext().getSession().get("currentUser");
+			//如果当前用户是销售主管，则查询所有
+			if(tu.getPower() == 1)
+				tu = null;
+			int count = csService.countAllAndRes("已归档", scusName, ssum, stype, st, et,tu);
+			pageCount = count/pageSize+(count%pageSize==0?0:1);
+			
+			//设置leftPage 和 nextPage
+			lastPage = currentPage == 1?1:currentPage-1;
+			nextPage = currentPage == pageCount?currentPage:currentPage+1;
+			
+			for(int i=1;i<=pageCount;i++){
+				pages.add(i);
+			}
+
+			cslist = csService.findByPageAndRes((currentPage-1)*pageSize, pageSize,"已归档",scusName, ssum, stype, st, et ,tu);
+			
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+		return "arList";
+	}
+	
+	public String arMI(){
+		cs = csService.load(cnmid);
+		return "arMI";
+	}
+	@Override
+	public Customer_service getModel() {
+		
+		cs = new Customer_service();
+		return this.cs;
+	}
+
+	public Customer_service getCs() {
+		return cs;
+	}
+
+	public void setCs(Customer_service cs) {
+		this.cs = cs;
+	}
+
+	public List<Customer> getCustomers() {
+		return customers;
+	}
+
+	public void setCustomers(List<Customer> customers) {
+		this.customers = customers;
+	}
+
+	public ServiceType[] getTypes() {
+		return types;
+	}
+
+	public void setTypes(ServiceType[] types) {
+		this.types = types;
+	}
+
+	public List<ServiceItem> getServices() {
+		return services;
+	}
+
+	public void setServices(List<ServiceItem> services) {
+		this.services = services;
+	}
+
+	public String getCurrentTime() {
+		return currentTime;
+	}
+
+	public void setCurrentTime(String currentTime) {
+		this.currentTime = currentTime;
+	}
+
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+	
+	public String getCreatePersonName() {
+		return createPersonName;
+	}
+
+	public void setCreatePersonName(String createPersonName) {
+		this.createPersonName = createPersonName;
+	}
+
+	public Long getServiceId() {
+		return serviceId;
+	}
+
+	public void setServiceId(Long serviceId) {
+		this.serviceId = serviceId;
+	}
+
+	public Long getCustomerId() {
+		return customerId;
+	}
+
+	public void setCustomerId(Long customerId) {
+		this.customerId = customerId;
+	}
+
+	public List<Integer> getPages() {
+		return pages;
+	}
+
+	public void setPages(List<Integer> pages) {
+		this.pages = pages;
+	}
+
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
+	}
+
+	public int getPageCount() {
+		return pageCount;
+	}
+
+	public void setPageCount(int pageCount) {
+		this.pageCount = pageCount;
+	}
+
+	public int getLastPage() {
+		return lastPage;
+	}
+
+	public void setLastPage(int lastPage) {
+		this.lastPage = lastPage;
+	}
+
+	public int getNextPage() {
+		return nextPage;
+	}
+
+	public void setNextPage(int nextPage) {
+		this.nextPage = nextPage;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public List<ServiceItem> getItemList() {
+		return itemList;
+	}
+
+	public void setItemList(List<ServiceItem> itemList) {
+		this.itemList = itemList;
+	}
+
+	public List<User> getCusManagers() {
+		return cusManagers;
+	}
+
+	public void setCusManagers(List<User> cusManagers) {
+		this.cusManagers = cusManagers;
+	}
+
+	public Long getCnmid() {
+		return cnmid;
+	}
+
+	public void setCnmid(Long cnmid) {
+		this.cnmid = cnmid;
+	}
+
+	public Long getCusManId() {
+		return cusManId;
+	}
+
+	public void setCusManId(Long cusManId) {
+		this.cusManId = cusManId;
+	}
+
+	public List<Customer_service> getCslist() {
+		return cslist;
+	}
+
+	public void setCslist(List<Customer_service> cslist) {
+		this.cslist = cslist;
+	}
+
+	public String getServiceDeals() {
+		return serviceDeals;
+	}
+
+	public void setServiceDeals(String serviceDeals) {
+		this.serviceDeals = serviceDeals;
+	}
+
+	public String getTresult() {
+		return tresult;
+	}
+
+	public void setTresult(String tresult) {
+		this.tresult = tresult;
+	}
+
+	public int getTsatisfication() {
+		return tsatisfication;
+	}
+
+	public void setTsatisfication(int tsatisfication) {
+		this.tsatisfication = tsatisfication;
+	}
+
+	
+
+	public String getSsum() {
+		return ssum;
+	}
+
+	public void setSsum(String ssum) {
+		this.ssum = ssum;
+	}
+
+	public String getStype() {
+		return stype;
+	}
+
+	public void setStype(String stype) {
+		this.stype = stype;
+	}
+
+	public String getScusName() {
+		return scusName;
+	}
+
+	public void setScusName(String scusName) {
+		this.scusName = scusName;
+	}
+
+	public String getSt() {
+		return st;
+	}
+
+	public void setSt(String st) {
+		this.st = st;
+	}
+
+	public String getEt() {
+		return et;
+	}
+
+	public void setEt(String et) {
+		this.et = et;
+	}
+
+
+	
+}

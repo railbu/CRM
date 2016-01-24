@@ -1,0 +1,142 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ page import="java.util.*" %>
+<%@ page import="java.text.*" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+		<title>Insert title here</title>
+		<%@include file="/common/header.jsp"%>
+		<%@include file="/common/meta.jsp"%>
+</head>
+
+<body>
+		<%@include file="topCNM.jsp"%>
+		<%@include file="naviCN.jsp"%>
+		
+		<script src="${ctx}/resources/js/typeahead-bs2.min.js"></script>
+		<script src="${ctx}/resources/js/ace-elements.min.js"></script>
+		<script src="${ctx}/resources/js/ace.min.js"></script>
+	
+		<div class="mainc" id="mainc">
+			<div class="navbar1">
+				<span class="maincLabel">
+					<i class="glyphicon glyphicon-export"></i>
+					销售机会管理
+					<a href="#" class="aactive" class="aactive">指派销售机会</a>
+					<a href="${ctx}/3CusManager/opportunity_add.action" >新建销售机会</a>
+					<a href="${ctx}/3CusManager/opportunity_list.action">销售机会管理</a>
+				</span>
+			</div>
+			
+			
+			<form action="${ctx}/3CusManager/opportunity_save.action" class="form-horizontal" enctype="multipart/form-data" method="post">
+				<div class="table1">
+					<table class="table text-center">
+						<tr>
+							<td>
+								<label class="control-label">编号</label>
+							</td>
+							<td>
+    							<s:textfield name="id" cssClass="form-control" id="id" value="%{opportunity.id}" readonly="true"/>
+							</td>
+							<td>
+								<label class="control-label">机会来源</label>
+							</td>
+							<td>
+    							<s:textfield name="source" cssClass="form-control" id="source" value="%{opportunity.source}" readonly="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label class="control-label">客户名称</label>
+							</td>
+							<td>
+    							<s:textfield name="customerName" cssClass="form-control" id="customerName" value="%{opportunity.customerName}" readonly="true"/>
+							</td>
+							<td>
+								<label class="control-label">成功几率</label>
+							</td>
+							<td style="width:400px;text-align:left"> 
+    							<s:textfield name="successRate" cssClass="form-control" id="successRate" value="%{opportunity.successRate}" readonly="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label class="control-label">概要</label>
+							</td>
+							<td colspan="2">
+    							<s:textfield name="summary" cssClass="form-control" id="summary" value="%{opportunity.summary}" readonly="true"/>
+    						</td>
+						</tr>
+						<tr>
+							<td>
+								<label class="control-label">联系人</label>
+							</td>
+							<td>
+    							<s:textfield name="contactName" cssClass="form-control" id="contactName" value="%{opportunity.contactName}" readonly="true"/>
+							</td>
+							<td>
+								<label class="control-label">联系人电话</label>
+							</td>
+							<td>
+    							<s:textfield name="contactPhone" cssClass="form-control" id="contactPhone" value="%{opportunity.contactPhone}" readonly="true"/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label class="control-label">机会描述</label>
+							</td>
+							<td colspan="2">
+    							<s:textfield name="description" cssClass="form-control" id="description" value="%{opportunity.description}" readonly="true"/>
+    						</td>
+						</tr>
+						<tr>
+							<td>
+								<label class="control-label">创建人</label>
+							</td>
+							<td>
+								<s:hidden name="userId"  value="%{opportunity.createPerson.id}"/>
+								<s:textfield name="username" cssClass="form-control" id="contactPhone" value="%{opportunity.createPerson.name}" readonly="true"/>
+							</td>
+							<td>
+								<label class="control-label">创建时间</label>
+							</td>
+							<td>
+								<s:textfield name="createTime" cssClass="form-control" id="createTime" readonly="true">
+									<s:param name="value" value="%{opportunity.createTime}"><s:date name="value" format="yyyy-MM-dd HH:mm:ss" /></s:param>
+								</s:textfield>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div class="table1">
+					<table class="table text-center">
+						<tr>
+							<td>
+								<label class="control-label">指派给</label>
+							</td>
+							<td>
+								<s:select list="users" cssClass="form-control" name="aUserId" listValue="name" listKey="id"></s:select>
+							</td>
+							<td>
+								<label class="control-label">指派时间</label>
+							</td>
+							<td>
+								<% String datetime=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime()); //获取系统时间 %>
+    							<input type="text" name="assignTime" class="form-control" value="<%=datetime%>" readonly>
+    						</td>
+						</tr>
+					</table>					
+				</div>
+				
+				<div class="col-sm-offset-5 col-sm-8">
+					<s:submit cssClass="btn btn-primary" value="保存"/>
+					<s:reset cssClass="btn btn-default" value="重置"/>
+				</div>
+			</form>
+		</div>
+
+</body>
+</html>
